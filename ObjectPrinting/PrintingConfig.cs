@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace ObjectPrinting
@@ -37,5 +41,34 @@ namespace ObjectPrinting
             }
             return sb.ToString();
         }
+
+        public PrintingConfig<TOwner> ExcludeType<TypeProperty>()
+        {
+            return this;
+        }
+
+        public PropertyPrintingConfig<T, TOwner> Printing<T>()
+        {
+            return new PropertyPrintingConfig<T, TOwner>(this);
+        }
+
+        public PrintingConfig<TOwner> SerializingProperty<TypeProperty>(
+            Expression<Func<TOwner, TypeProperty>> expression,
+            Func<TypeProperty, string> serializationMethod)
+        {
+            return this;
+        }
+
+        public PrintingConfig<TOwner> Clip(Expression<Func<TOwner, string>> stringProperty, int startIndex, int endIndex)
+
+        {
+            return this;
+        }
+
+        public PrintingConfig<TOwner> ExcludeProperty<Propetry>(Expression<Func<TOwner, Propetry>> expression)
+        {
+            return this;
+        }
+
     }
 }
