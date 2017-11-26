@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,20 +19,17 @@ namespace ObjectPrinting
             this.config = config;
         }
 
-
         public PrintingConfig<TOwner> Config => config;
 
-        public PrintingConfig<TOwner>Using(Func<Type, string> serializationFun)
+        public PrintingConfig<TOwner>Using(Func<T, string> serializationFun)
         {
-            if (!config.SerializationFuncs.ContainsKey(typeof(T)))
+            if (!config.SerializationFuncsForDifferentType.ContainsKey(typeof(T)))
             {
-               config.SerializationFuncs.Add(typeof(T), serializationFun);
-                return config;
+               config.SerializationFuncsForDifferentType.Add(typeof(T), null);
             }
-            config.SerializationFuncs[typeof(T)] = serializationFun;
+            config.SerializationFuncsForDifferentType[typeof(T)] = x => serializationFun((T)x);
             return config;      
         }
-
     }
 
 
