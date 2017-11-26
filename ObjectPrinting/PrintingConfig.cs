@@ -12,7 +12,9 @@ namespace ObjectPrinting
     {
 
         public  List<Type> ExcludeTypes = new List<Type>();
-        public Dictionary<Type, Func<Type, string>> SerializationFuncs = new Dictionary<Type, Func<Type, string>>();
+        public Dictionary<Type, Func<Type, string>> SerializationFuncsForDifferentType = new Dictionary<Type, Func<Type, string>>();
+        public Dictionary<Type, CultureInfo> CultureForDifferentNumberBase = new Dictionary<Type, CultureInfo>();
+        public Dictionary<string, Func<Type, string>> SerializationFuncsForDifferentProperty = new Dictionary<string, Func<Type, string>>();
 
         public string PrintToString(TOwner obj)
         {
@@ -60,13 +62,20 @@ namespace ObjectPrinting
 
         public PrintingConfig<TOwner> SerializingProperty<TypeProperty>(
             Expression<Func<TOwner, TypeProperty>> expression,
-            Func<TypeProperty, string> serializationMethod)
+            Func<Type, string> serializationMethod)
         {
+            var propInfo =
+                ((MemberExpression) expression.Body)
+                .Member as PropertyInfo;
+            if (!SerializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
+            {
+                SerializationFuncsForDifferentProperty.Add(propInfo.Name, null);
+            }
+            SerializationFuncsForDifferentProperty[propInfo.Name] = serializationMethod;
             return this;
         }
 
         public PrintingConfig<TOwner> Clip(Expression<Func<TOwner, string>> stringProperty, int startIndex, int endIndex)
-
         {
             return this;
         }
