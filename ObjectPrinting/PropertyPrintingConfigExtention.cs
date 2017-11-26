@@ -13,6 +13,8 @@ namespace ObjectPrinting
         private static PrintingConfig<TOwner> AddCulture<TOwner>(PrintingConfig<TOwner> printingConfig, CultureInfo culture,
             Type type)
         {
+            if (printingConfig.ExcludeTypes.Contains(type))
+                throw new InvalidOperationException();
             if (!printingConfig.CultureForDifferentNumberBase.ContainsKey(type))
             {
                 printingConfig.CultureForDifferentNumberBase.Add(type, null);

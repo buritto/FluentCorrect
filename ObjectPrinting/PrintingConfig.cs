@@ -30,25 +30,7 @@ namespace ObjectPrinting
             return PrintToString(obj, 0);
         }
 
-        private string DefaultPrint(object obj, int nestingLevel)
-        {
-            if (obj == null)
-                return "null" + Environment.NewLine;
-            if (finalTypes.Contains(obj.GetType()))
-                return obj + Environment.NewLine;
-
-            var identation = new string('\t', nestingLevel + 1);
-            var sb = new StringBuilder();
-            var type = obj.GetType();
-            sb.AppendLine(type.Name);
-            foreach (var propertyInfo in type.GetProperties())
-            {
-                sb.Append(identation + propertyInfo.Name + " = " +
-                          PrintToString(propertyInfo.GetValue(obj),
-                              nestingLevel + 1));
-            }
-            return sb.ToString();
-        }
+        
 
         public string PrintToString(Object obj, int nestingLevel)
         {
@@ -108,9 +90,11 @@ namespace ObjectPrinting
             Expression<Func<TOwner, TypeProperty>> expression,
             Func<TypeProperty, string> serializationMethod)
         {
+            
             var propInfo =
                 ((MemberExpression) expression.Body)
                 .Member as PropertyInfo;
+            CheckCoorectAddSerialization(propInfo);
             if (!SerializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
             {
                 SerializationFuncsForDifferentProperty.Add(propInfo.Name, null);
@@ -130,6 +114,12 @@ namespace ObjectPrinting
             Clipper[propInfo.Name] =
                 propertyToString => propertyToString.Substring(startIndex, endIndex);
             return this;
+        }
+
+        private void CheckCoorectAddSerialization(PropertyInfo property)
+        {
+            if (ExcludePropert.Contains(property.Name) ||ExcludeTypes.Contains(property.PropertyType))
+                throw new InvalidOperationException();
         }
 
         public PrintingConfig<TOwner> ExcludeProperty<Propetry>(Expression<Func<TOwner, Propetry>> expression)

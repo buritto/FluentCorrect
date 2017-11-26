@@ -23,6 +23,8 @@ namespace ObjectPrinting
 
         public PrintingConfig<TOwner>Using(Func<T, string> serializationFun)
         {
+            if (config.ExcludeTypes.Contains(typeof(T)))
+                throw new InvalidOperationException();
             if (!config.SerializationFuncsForDifferentType.ContainsKey(typeof(T)))
             {
                config.SerializationFuncsForDifferentType.Add(typeof(T), null);
