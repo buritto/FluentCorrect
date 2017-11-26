@@ -21,9 +21,15 @@ namespace ObjectPrinting
 
         public PrintingConfig<TOwner> Config => config;
 
-        public PrintingConfig<TOwner> Using(Func<T, string> serializationFun)
+        public PrintingConfig<TOwner>Using(Func<Type, string> serializationFun)
         {
-            return config;
+            if (!config.SerializationFuncs.ContainsKey(typeof(T)))
+            {
+               config.SerializationFuncs.Add(typeof(T), serializationFun);
+                return config;
+            }
+            config.SerializationFuncs[typeof(T)] = serializationFun;
+            return config;      
         }
 
     }

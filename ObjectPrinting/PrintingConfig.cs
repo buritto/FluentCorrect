@@ -10,6 +10,10 @@ namespace ObjectPrinting
 {
     public class PrintingConfig<TOwner>
     {
+
+        public  List<Type> ExcludeTypes = new List<Type>();
+        public Dictionary<Type, Func<Type, string>> SerializationFuncs = new Dictionary<Type, Func<Type, string>>();
+
         public string PrintToString(TOwner obj)
         {
             return PrintToString(obj, 0);
@@ -44,6 +48,8 @@ namespace ObjectPrinting
 
         public PrintingConfig<TOwner> ExcludeType<TypeProperty>()
         {
+            if (!ExcludeTypes.Contains(typeof(TypeProperty)))
+                ExcludeTypes.Add(typeof(TypeProperty));
             return this;
         }
 
