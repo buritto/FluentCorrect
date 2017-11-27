@@ -9,7 +9,7 @@ namespace ObjectPrinting
         private HashSet<Type> excludeTypesInConfig;
         private Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType;
 
-        public PropertyPrintingConfig(PrintingConfig<TOwner> config, HashSet<Type> excludeTypesInConfig, Dictionary<Type, Func<object, string>>
+        private PropertyPrintingConfig(PrintingConfig<TOwner> config, HashSet<Type> excludeTypesInConfig, Dictionary<Type, Func<object, string>>
             serializationFuncsForDifferentType)
         {
             this.config = config;
