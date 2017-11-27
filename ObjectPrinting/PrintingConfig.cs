@@ -10,19 +10,19 @@ namespace ObjectPrinting
 {
     public class PrintingConfig<TOwner>
     {
-        public HashSet<Type> ExcludeTypes = new HashSet<Type>();
+        private HashSet<Type> ExcludeTypes = new HashSet<Type>();
 
-        public HashSet<string> ExcludePropert = new HashSet<string>();
+        private HashSet<string> ExcludePropert = new HashSet<string>();
 
-        public Dictionary<Type, Func<object, string>> SerializationFuncsForDifferentType =
+        private Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType =
             new Dictionary<Type, Func<object, string>>();
 
-        public Dictionary<Type, CultureInfo> CultureForDifferentNumberBase = new Dictionary<Type, CultureInfo>();
+        private Dictionary<Type, CultureInfo> cultureForDifferentNumberBase = new Dictionary<Type, CultureInfo>();
 
-        public Dictionary<string, Func<object, string>> SerializationFuncsForDifferentProperty =
+        private Dictionary<string, Func<object, string>> serializationFuncsForDifferentProperty =
             new Dictionary<string, Func<object, string>>();
 
-        private Dictionary<string, Func<string, string>> Clipper = new Dictionary<string, Func<string, string>>();
+        private Dictionary<string, Func<string, string>> clipper = new Dictionary<string, Func<string, string>>();
 
         private Type[] finalTypes = new[]
         {
@@ -48,9 +48,9 @@ namespace ObjectPrinting
                 if (CheckExclude(property))
                     continue;
                 var serilizationProperty = ApplySerialization(property, obj);
-                if (Clipper.ContainsKey(property.Name))
+                if (clipper.ContainsKey(property.Name))
                 {
-                    serilizationProperty = Clipper[property.Name](serilizationProperty.ToString());
+                    serilizationProperty = clipper[property.Name](serilizationProperty.ToString());
                 }
                 sb.Append(identation + property.Name + " = " +
                           PrintToString(serilizationProperty,
@@ -61,13 +61,13 @@ namespace ObjectPrinting
 
         private object ApplySerialization(PropertyInfo property, object obj)
         {
-            if (SerializationFuncsForDifferentProperty.ContainsKey(property.Name))
+            if (serializationFuncsForDifferentProperty.ContainsKey(property.Name))
             {
-                return SerializationFuncsForDifferentProperty[property.Name](property.GetValue(obj));
+                return serializationFuncsForDifferentProperty[property.Name](property.GetValue(obj));
             }
-            if (SerializationFuncsForDifferentType.ContainsKey(property.PropertyType))
+            if (serializationFuncsForDifferentType.ContainsKey(property.PropertyType))
             {
-                return SerializationFuncsForDifferentType[property.PropertyType](property.GetValue(obj));
+                return serializationFuncsForDifferentType[property.PropertyType](property.GetValue(obj));
             }
             return property.GetValue(obj);
             ;
@@ -87,7 +87,7 @@ namespace ObjectPrinting
 
         public PropertyPrintingConfig<T, TOwner> Printing<T>()
         {
-            return new PropertyPrintingConfig<T, TOwner>(this);
+            return new PropertyPrintingConfig<T, TOwner>(this, ExcludeTypes, serializationFuncsForDifferentType);
         }
 
         public PrintingConfig<TOwner> SerializingProperty<TypeProperty>(
@@ -98,11 +98,11 @@ namespace ObjectPrinting
                 ((MemberExpression) expression.Body)
                 .Member as PropertyInfo;
             CheckCoorectAddSerialization(propInfo);
-            if (!SerializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
+            if (!serializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
             {
-                SerializationFuncsForDifferentProperty.Add(propInfo.Name, null);
+                serializationFuncsForDifferentProperty.Add(propInfo.Name, null);
             }
-            SerializationFuncsForDifferentProperty[propInfo.Name] = x => serializationMethod((TypeProperty) x);
+            serializationFuncsForDifferentProperty[propInfo.Name] = x => serializationMethod((TypeProperty) x);
             return this;
         }
 
@@ -112,9 +112,9 @@ namespace ObjectPrinting
             var propInfo =
                 ((MemberExpression) stringProperty.Body)
                 .Member as PropertyInfo;
-            if (!Clipper.ContainsKey(propInfo.Name))
-                Clipper.Add(propInfo.Name, null);
-            Clipper[propInfo.Name] =
+            if (!clipper.ContainsKey(propInfo.Name))
+                clipper.Add(propInfo.Name, null);
+            clipper[propInfo.Name] =
                 propertyToString => propertyToString.Substring(startIndex, endIndex);
             return this;
         }
