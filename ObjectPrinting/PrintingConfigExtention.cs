@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ObjectPrinting.Tests;
 
 namespace ObjectPrinting
 {
     public static class PrintingConfigExtention
     {
-        private static Type[] finalTypes = new[]
+        private static readonly Type[] finalTypes =
         {
             typeof(int), typeof(double), typeof(float), typeof(string),
             typeof(DateTime), typeof(TimeSpan)
@@ -32,11 +30,9 @@ namespace ObjectPrinting
             var type = obj.GetType();
             sb.AppendLine(type.Name);
             foreach (var propertyInfo in type.GetProperties())
-            {
                 sb.Append(identation + propertyInfo.Name + " = " +
                           DefaultPrint(propertyInfo.GetValue(obj),
                               nestingLevel + 1));
-            }
             return sb.ToString();
         }
 
@@ -45,6 +41,5 @@ namespace ObjectPrinting
             var pritingConfig = config();
             return pritingConfig.PrintToString(person);
         }
-
     }
 }
