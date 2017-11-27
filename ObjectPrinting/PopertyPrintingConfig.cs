@@ -13,7 +13,6 @@ namespace ObjectPrinting
 
         private PrintingConfig<TOwner> config;
 
-
         public PropertyPrintingConfig(PrintingConfig<TOwner> config)
         {
             this.config = config;

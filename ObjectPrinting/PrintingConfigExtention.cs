@@ -14,6 +14,7 @@ namespace ObjectPrinting
             typeof(int), typeof(double), typeof(float), typeof(string),
             typeof(DateTime), typeof(TimeSpan)
         };
+
         public static string GetDefaultSerializ(this Person person)
         {
             return DefaultPrint(person, 0);
@@ -44,6 +45,6 @@ namespace ObjectPrinting
             var pritingConfig = config();
             return pritingConfig.PrintToString(person);
         }
-        
+
     }
 }
