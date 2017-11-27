@@ -35,7 +35,7 @@ namespace ObjectPrinting.Tests
                 .Printing<double>()
                 .Using(p => p.ToString())
                 //3. Для числовых типов указать культуру
-                .Printing<double>()
+                .Printing<int>()
                 .Using(CultureInfo.CurrentCulture)
                 //4. Настроить сериализацию конкретного свойства
                 .SerializingProperty(p => p.Name, name => "mr/ms" + name)
