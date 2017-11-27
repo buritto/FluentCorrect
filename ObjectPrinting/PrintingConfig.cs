@@ -10,21 +10,21 @@ namespace ObjectPrinting
 {
     public class PrintingConfig<TOwner>
     {
-        private HashSet<Type> excludeTypes = new HashSet<Type>();
+        private readonly HashSet<Type> excludeTypes = new HashSet<Type>();
 
-        private HashSet<string> excludePropert = new HashSet<string>();
+        private readonly HashSet<string> excludePropert = new HashSet<string>();
 
-        private Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType =
+        private readonly Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType =
             new Dictionary<Type, Func<object, string>>();
 
-        private Dictionary<Type, CultureInfo> cultureForDifferentNumberBase = new Dictionary<Type, CultureInfo>();
+        private readonly Dictionary<Type, CultureInfo> cultureForDifferentNumberBase = new Dictionary<Type, CultureInfo>();
 
-        private Dictionary<string, Func<object, string>> serializationFuncsForDifferentProperty =
+        private readonly Dictionary<string, Func<object, string>> serializationFuncsForDifferentProperty =
             new Dictionary<string, Func<object, string>>();
 
-        private Dictionary<string, Func<string, string>> clipper = new Dictionary<string, Func<string, string>>();
+        private readonly Dictionary<string, Func<string, string>> clipper = new Dictionary<string, Func<string, string>>();
 
-        private Type[] finalTypes = new[]
+        private readonly Type[] finalTypes = new[]
         {
             typeof(int), typeof(double), typeof(float), typeof(string),
             typeof(DateTime), typeof(TimeSpan)
@@ -65,12 +65,8 @@ namespace ObjectPrinting
             {
                 return serializationFuncsForDifferentProperty[property.Name](property.GetValue(obj));
             }
-            if (serializationFuncsForDifferentType.ContainsKey(property.PropertyType))
-            {
-                return serializationFuncsForDifferentType[property.PropertyType](property.GetValue(obj));
-            }
-            return property.GetValue(obj);
-            ;
+            return serializationFuncsForDifferentType.ContainsKey(property.PropertyType) ?
+                serializationFuncsForDifferentType[property.PropertyType](property.GetValue(obj)) : property.GetValue(obj);
         }
 
         private bool CheckExclude(PropertyInfo property)
@@ -135,9 +131,8 @@ namespace ObjectPrinting
                 excludePropert.Add(propInfo.Name);
             return this;
         }
-        public PrintingConfig<TOwner> AddCulture(
-            CultureInfo culture,
-            Type type)
+
+        public PrintingConfig<TOwner> AddCulture(CultureInfo culture, Type type)
         {
             if (excludeTypes.Contains(type))
                 throw new InvalidOperationException();

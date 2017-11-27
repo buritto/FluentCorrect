@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace ObjectPrinting
 {
@@ -13,26 +12,26 @@ namespace ObjectPrinting
                 typeof(int));
         }
 
-        //public static PrintingConfig<TOwner> Using<TOwner>(
-        //    this PropertyPrintingConfig<double, TOwner> propertyPrintingConfig, CultureInfo culture)
-        //{
-        //    return AddCulture(((IPropertyPrintingConfig<double, TOwner>) propertyPrintingConfig).Config, culture,
-        //        typeof(double));
-        //}
+        public static PrintingConfig<TOwner> Using<TOwner>(
+            this PropertyPrintingConfig<double, TOwner> propertyPrintingConfig, CultureInfo culture)
+        {
+            return propertyPrintingConfig.Config.AddCulture(culture,
+                typeof(double));
+        }
 
-        //public static PrintingConfig<TOwner> Using<TOwner>(
-        //    this PropertyPrintingConfig<long, TOwner> propertyPrintingConfig, CultureInfo culture)
-        //{
-        //    return AddCulture(((IPropertyPrintingConfig<long, TOwner>) propertyPrintingConfig).Config, culture,
-        //        typeof(long));
-        //}
+        public static PrintingConfig<TOwner> Using<TOwner>(
+            this PropertyPrintingConfig<long, TOwner> propertyPrintingConfig, CultureInfo culture)
+        {
+            return propertyPrintingConfig.Config.AddCulture(culture,
+                typeof(long));
+        }
 
-        //public static PrintingConfig<TOwner> Using<TOwner>(
-        //    this PropertyPrintingConfig<float, TOwner> propertyPrintingConfig, CultureInfo culture)
-        //{
-        //    return AddCulture(((IPropertyPrintingConfig<float, TOwner>) propertyPrintingConfig).Config, culture,
-        //        typeof(float));
-        //}
+        public static PrintingConfig<TOwner> Using<TOwner>(
+            this PropertyPrintingConfig<float, TOwner> propertyPrintingConfig, CultureInfo culture)
+        {
+            return propertyPrintingConfig.Config.AddCulture(culture,
+                typeof(float));
+        }
 
         public static PrintingConfig<TOwner> Clip<TOwner>(
             this PropertyPrintingConfig<string, TOwner> propertyPrintingConfig, CultureInfo culture)

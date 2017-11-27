@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace ObjectPrinting
 {
     public class PropertyPrintingConfig<T, TOwner> : IPropertyPrintingConfig<T, TOwner>
     {
-        private PrintingConfig<TOwner> config;
-        private HashSet<Type> excludeTypesInConfig;
-        private Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType;
-        private Dictionary<Type, CultureInfo> cultureForDifferentNumberBase;
+        private readonly PrintingConfig<TOwner> config;
+        private readonly HashSet<Type> excludeTypesInConfig;
+        private readonly Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType;
 
-        private PropertyPrintingConfig(PrintingConfig<TOwner> config, HashSet<Type> excludeTypesInConfig, Dictionary<Type, Func<object, string>>
-            serializationFuncsForDifferentType, Dictionary<Type, CultureInfo> cultureForDifferentNumberBase )
+        public PropertyPrintingConfig(PrintingConfig<TOwner> config, HashSet<Type> excludeTypesInConfig,
+            Dictionary<Type, Func<object, string>>
+                serializationFuncsForDifferentType)
         {
             this.config = config;
             this.excludeTypesInConfig = excludeTypesInConfig;
             this.serializationFuncsForDifferentType = serializationFuncsForDifferentType;
-            this.cultureForDifferentNumberBase = cultureForDifferentNumberBase;
         }
 
         public PrintingConfig<TOwner> Config => config;
@@ -33,7 +31,5 @@ namespace ObjectPrinting
             serializationFuncsForDifferentType[typeof(T)] = x => serializationFun((T) x);
             return config;
         }
-
-  
     }
 }
