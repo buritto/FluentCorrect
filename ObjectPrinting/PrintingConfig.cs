@@ -10,9 +10,9 @@ namespace ObjectPrinting
 {
     public class PrintingConfig<TOwner>
     {
-        private HashSet<Type> ExcludeTypes = new HashSet<Type>();
+        private HashSet<Type> excludeTypes = new HashSet<Type>();
 
-        private HashSet<string> ExcludePropert = new HashSet<string>();
+        private HashSet<string> excludePropert = new HashSet<string>();
 
         private Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType =
             new Dictionary<Type, Func<object, string>>();
@@ -75,19 +75,19 @@ namespace ObjectPrinting
 
         private bool CheckExclude(PropertyInfo property)
         {
-            return ExcludePropert.Contains(property.Name) || ExcludeTypes.Contains(property.PropertyType);
+            return excludePropert.Contains(property.Name) || excludeTypes.Contains(property.PropertyType);
         }
 
         public PrintingConfig<TOwner> ExcludeType<TypeProperty>()
         {
-            if (!ExcludeTypes.Contains(typeof(TypeProperty)))
-                ExcludeTypes.Add(typeof(TypeProperty));
+            if (!excludeTypes.Contains(typeof(TypeProperty)))
+                excludeTypes.Add(typeof(TypeProperty));
             return this;
         }
 
         public PropertyPrintingConfig<T, TOwner> Printing<T>()
         {
-            return new PropertyPrintingConfig<T, TOwner>(this, ExcludeTypes, serializationFuncsForDifferentType);
+            return new PropertyPrintingConfig<T, TOwner>(this, excludeTypes, serializationFuncsForDifferentType);
         }
 
         public PrintingConfig<TOwner> SerializingProperty<TypeProperty>(
@@ -121,7 +121,7 @@ namespace ObjectPrinting
 
         private void CheckCoorectAddSerialization(PropertyInfo property)
         {
-            if (ExcludePropert.Contains(property.Name) || ExcludeTypes.Contains(property.PropertyType))
+            if (excludePropert.Contains(property.Name) || excludeTypes.Contains(property.PropertyType))
                 throw new InvalidOperationException();
         }
 
@@ -131,8 +131,19 @@ namespace ObjectPrinting
             var propInfo =
                       ((MemberExpression) expression.Body)
                 .Member as PropertyInfo;
-            if (!ExcludePropert.Contains(propInfo.Name))
-                ExcludePropert.Add(propInfo.Name);
+            if (!excludePropert.Contains(propInfo.Name))
+                excludePropert.Add(propInfo.Name);
+            return this;
+        }
+        public PrintingConfig<TOwner> AddCulture(
+            CultureInfo culture,
+            Type type)
+        {
+            if (excludeTypes.Contains(type))
+                throw new InvalidOperationException();
+            if (cultureForDifferentNumberBase.ContainsKey(type))
+                cultureForDifferentNumberBase.Add(type, null);
+            cultureForDifferentNumberBase[type] = culture;
             return this;
         }
     }

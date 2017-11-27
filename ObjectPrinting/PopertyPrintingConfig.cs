@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ObjectPrinting
 {
@@ -8,13 +9,15 @@ namespace ObjectPrinting
         private PrintingConfig<TOwner> config;
         private HashSet<Type> excludeTypesInConfig;
         private Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType;
+        private Dictionary<Type, CultureInfo> cultureForDifferentNumberBase;
 
         private PropertyPrintingConfig(PrintingConfig<TOwner> config, HashSet<Type> excludeTypesInConfig, Dictionary<Type, Func<object, string>>
-            serializationFuncsForDifferentType)
+            serializationFuncsForDifferentType, Dictionary<Type, CultureInfo> cultureForDifferentNumberBase )
         {
             this.config = config;
             this.excludeTypesInConfig = excludeTypesInConfig;
             this.serializationFuncsForDifferentType = serializationFuncsForDifferentType;
+            this.cultureForDifferentNumberBase = cultureForDifferentNumberBase;
         }
 
         public PrintingConfig<TOwner> Config => config;
@@ -30,5 +33,7 @@ namespace ObjectPrinting
             serializationFuncsForDifferentType[typeof(T)] = x => serializationFun((T) x);
             return config;
         }
+
+  
     }
 }
