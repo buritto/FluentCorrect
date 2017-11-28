@@ -93,7 +93,7 @@ namespace ObjectPrinting
         {
             var propInfo =
                 ((MemberExpression) expression.Body)
-                .Member as PropertyInfo;
+                .Member;
             CheckCoorectAddSerialization(propInfo);
             if (!serializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
             {
@@ -106,30 +106,30 @@ namespace ObjectPrinting
         public PrintingConfig<TOwner> Clip(Expression<Func<TOwner, string>> stringProperty, int startIndex,
             int endIndex)
         {
-            var propInfo =
+            var propName =
                 ((MemberExpression) stringProperty.Body)
-                .Member as PropertyInfo;
-            if (!clipper.ContainsKey(propInfo.Name))
-                clipper.Add(propInfo.Name, null);
-            clipper[propInfo.Name] =
+                .Member.Name;
+            if (!clipper.ContainsKey(propName))
+                clipper.Add(propName, null);
+            clipper[propName] =
                 propertyToString => propertyToString.Substring(startIndex, endIndex);
             return this;
         }
 
-        private void CheckCoorectAddSerialization(PropertyInfo property)
+        private void CheckCoorectAddSerialization(MemberInfo property)
         {
-            if (excludePropert.Contains(property.Name) || excludeTypes.Contains(property.PropertyType))
+            if (excludePropert.Contains(property.Name) || excludeTypes.Contains(property.GetType()))
                 throwException();
         }
 
         public PrintingConfig<TOwner> ExcludeProperty<Propetry>(Expression<Func<TOwner, Propetry>> expression)
         {
 
-            var propInfo =
-                      ((MemberExpression) expression.Body)
-                .Member as PropertyInfo;
-            if (!excludePropert.Contains(propInfo.Name))
-                excludePropert.Add(propInfo.Name);
+            var propName =
+                ((MemberExpression) expression.Body)
+                .Member.Name;
+            if (!excludePropert.Contains(propName))
+                excludePropert.Add(propName);
             return this;
         }
 
