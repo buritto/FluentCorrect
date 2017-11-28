@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -24,6 +23,8 @@ namespace ObjectPrinting
 
         private readonly Dictionary<string, Func<string, string>> clipper = new Dictionary<string, Func<string, string>>();
         
+        private readonly Action throwException = () => throw new InvalidOperationException("This property or type was excluded");
+
         public string PrintToString(TOwner obj)
         {
             return PrintToString(obj, 0);
@@ -118,7 +119,7 @@ namespace ObjectPrinting
         private void CheckCoorectAddSerialization(PropertyInfo property)
         {
             if (excludePropert.Contains(property.Name) || excludeTypes.Contains(property.PropertyType))
-                throw new InvalidOperationException();
+                throwException();
         }
 
         public PrintingConfig<TOwner> ExcludeProperty<Propetry>(Expression<Func<TOwner, Propetry>> expression)
@@ -135,7 +136,7 @@ namespace ObjectPrinting
         public PrintingConfig<TOwner> AddCulture(CultureInfo culture, Type type)
         {
             if (excludeTypes.Contains(type))
-                throw new InvalidOperationException();
+                throwException();
             if (cultureForDifferentNumberBase.ContainsKey(type))
                 cultureForDifferentNumberBase.Add(type, null);
             cultureForDifferentNumberBase[type] = culture;

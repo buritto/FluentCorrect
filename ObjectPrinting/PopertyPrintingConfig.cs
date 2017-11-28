@@ -8,6 +8,7 @@ namespace ObjectPrinting
         private readonly PrintingConfig<TOwner> config;
         private readonly HashSet<Type> excludeTypesInConfig;
         private readonly Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType;
+        private readonly Action throwException = () => throw new InvalidOperationException("This property or type was excluded");
 
         public PropertyPrintingConfig(PrintingConfig<TOwner> config, HashSet<Type> excludeTypesInConfig,
             Dictionary<Type, Func<object, string>>
@@ -23,7 +24,7 @@ namespace ObjectPrinting
         public PrintingConfig<TOwner> Using(Func<T, string> serializationFun)
         {
             if (excludeTypesInConfig.Contains(typeof(T)))
-                throw new InvalidOperationException();
+                throwException();
             if (!serializationFuncsForDifferentType.ContainsKey(typeof(T)))
             {
                 serializationFuncsForDifferentType.Add(typeof(T), null);
