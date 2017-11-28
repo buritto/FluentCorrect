@@ -30,7 +30,7 @@ namespace ObjectPrinting
             return PrintToString(obj, 0);
         }
 
-        public string PrintToString(Object obj, int nestingLevel)
+        private string PrintToString(Object obj, int nestingLevel)
         {
             if (obj == null)
                 return "null" + Environment.NewLine;
