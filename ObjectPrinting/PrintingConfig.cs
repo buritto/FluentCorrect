@@ -23,12 +23,6 @@ namespace ObjectPrinting
             new Dictionary<string, Func<object, string>>();
 
         private readonly Dictionary<string, Func<string, string>> clipper = new Dictionary<string, Func<string, string>>();
-
-        private readonly Type[] finalTypes = new[]
-        {
-            typeof(int), typeof(double), typeof(float), typeof(string),
-            typeof(DateTime), typeof(TimeSpan)
-        };
         
         public string PrintToString(TOwner obj)
         {
@@ -39,7 +33,7 @@ namespace ObjectPrinting
         {
             if (obj == null)
                 return "null" + Environment.NewLine;
-            if (finalTypes.Contains(obj.GetType()))
+            if (IsFinalType(obj.GetType()))
                 return obj + Environment.NewLine;
             var identation = new string('\t', nestingLevel + 1);
             var sb = new StringBuilder();
@@ -57,6 +51,12 @@ namespace ObjectPrinting
                               nestingLevel + 1));
             }
             return sb.ToString();
+        }
+
+        private bool IsFinalType(Type getType)
+        {
+            return getType.GetMethod("ToString",BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance) != null
+                   && getType.Assembly.FullName.Contains("mscorlib");
         }
 
         private object ApplySerialization(PropertyInfo property, object obj)
