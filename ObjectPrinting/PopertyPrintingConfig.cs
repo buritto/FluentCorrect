@@ -5,7 +5,6 @@ namespace ObjectPrinting
 {
     public class PropertyPrintingConfig<T, TOwner> : IPropertyPrintingConfig<T, TOwner>
     {
-        private readonly PrintingConfig<TOwner> config;
         private readonly HashSet<Type> excludeTypesInConfig;
         private readonly Dictionary<Type, Func<object, string>> serializationFuncsForDifferentType;
         private readonly Action throwException = () => throw new InvalidOperationException("This property or type was excluded");
@@ -14,12 +13,12 @@ namespace ObjectPrinting
             Dictionary<Type, Func<object, string>>
                 serializationFuncsForDifferentType)
         {
-            this.config = config;
+            Config = config;
             this.excludeTypesInConfig = excludeTypesInConfig;
             this.serializationFuncsForDifferentType = serializationFuncsForDifferentType;
         }
 
-        public PrintingConfig<TOwner> Config => config;
+        public PrintingConfig<TOwner> Config { get; }
 
         public PrintingConfig<TOwner> Using(Func<T, string> serializationFun)
         {
@@ -30,7 +29,7 @@ namespace ObjectPrinting
                 serializationFuncsForDifferentType.Add(typeof(T), null);
             }
             serializationFuncsForDifferentType[typeof(T)] = x => serializationFun((T) x);
-            return config;
+            return Config;
         }
     }
 }

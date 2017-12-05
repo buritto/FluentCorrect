@@ -19,13 +19,6 @@ namespace ObjectPrinting.Tests
         };
 
         [Test]
-        public void ExcludeType()
-        {
-            var printer = ObjectPrinter.For<Person>().ExcludeType<int>();
-            //  Assert.AreEqual(,printer.PrintToString(person));
-        }
-
-        [Test]
         public void Demo()
         {
             var printer = ObjectPrinter.For<Person>()

@@ -56,8 +56,9 @@ namespace ObjectPrinting
 
         private bool IsFinalType(Type getType)
         {
-            return getType.GetMethod("ToString",BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance) != null
-                   && getType.Assembly.FullName.Contains("mscorlib");
+            return getType.Assembly.FullName.Contains("mscorlib") && 
+             getType.GetMethod("ToString", BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance,
+             null ,new Type[]{} ,null ) != null;
         }
 
         private object ApplySerialization(PropertyInfo property, object obj)

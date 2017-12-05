@@ -32,11 +32,5 @@ namespace ObjectPrinting
             return propertyPrintingConfig.Config.AddCulture(culture,
                 typeof(float));
         }
-
-        public static PrintingConfig<TOwner> Clip<TOwner>(
-            this PropertyPrintingConfig<string, TOwner> propertyPrintingConfig, CultureInfo culture)
-        {
-            return ((IPropertyPrintingConfig<string, TOwner>) propertyPrintingConfig).Config;
-        }
     }
 }
