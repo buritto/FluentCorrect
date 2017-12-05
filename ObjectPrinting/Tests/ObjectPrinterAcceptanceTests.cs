@@ -19,6 +19,55 @@ namespace ObjectPrinting.Tests
         };
 
         [Test]
+        public void PrintToStringNotReturnWhiteSpaceOrNull()
+        {
+            var printer = ObjectPrinter.For<Person>();
+            var serializedData = printer.PrintToString(person);
+            Assert.False(string.IsNullOrWhiteSpace(serializedData));
+        }
+
+        [Test]
+        public void ExcludeType()
+        {
+            var printer = ObjectPrinter.For<Person>().ExcludeType<string>();
+            var serializedData = printer.PrintToString(person);
+            Assert.False(serializedData.Contains("Alex"));
+        }
+
+        [Test]
+        public void ExcludeProperty()
+        {
+            var printer = ObjectPrinter.For<Person>().ExcludeProperty(p => p.Height);
+            var serializedData = printer.PrintToString(person);
+            Assert.False(serializedData.Contains("Height"));
+        }
+
+        [Test]
+        public void PrintAlternativeSerialization()
+        {
+            var printer = ObjectPrinter.For<Person>().Printing<double>().Using(d => "DOUBLE");
+            var serializedData = printer.PrintToString(person);
+            Assert.True(serializedData.Contains("DOUBLE"));
+        }
+
+        [Test]
+        public void PrintWithSerializingProperty()
+        {
+            var printer = ObjectPrinter.For<Person>().SerializingProperty(p => p.Name, name => "I'm super developer");
+            var serializedData = printer.PrintToString(person);
+            Assert.True(serializedData.Contains("I'm super developer"));
+        }
+
+        [TestCase(1, 3)]
+        public void PrintToClip(int startIndex, int finishIndex)
+        {
+            var printer = ObjectPrinter.For<Person>().Clip(p => p.Name, startIndex, finishIndex);
+            var serializedData = printer.PrintToString(person);
+            Assert.True(serializedData.Contains("lex"));
+            Assert.False(serializedData.Contains("Alex"));
+        }
+
+        [Test]
         public void Demo()
         {
             var printer = ObjectPrinter.For<Person>()
@@ -28,7 +77,7 @@ namespace ObjectPrinting.Tests
                 .Printing<double>()
                 .Using(p => p.ToString())
                 //3. Для числовых типов указать культуру
-                .Printing<int>()
+                .Printing<double>()
                 .Using(CultureInfo.CurrentCulture)
                 //4. Настроить сериализацию конкретного свойства
                 .SerializingProperty(p => p.Name, name => "mr/ms" + name)

@@ -43,7 +43,7 @@ namespace ObjectPrinting
                 if (CheckExclude(property))
                     continue;
                 var serilizationProperty = ApplySerialization(property, obj);
-                if (clipper.ContainsKey(property.Name))
+                if (clipper.ContainsKey(property.Name) && serilizationProperty != null)
                 {
                     serilizationProperty = clipper[property.Name](serilizationProperty.ToString());
                 }
