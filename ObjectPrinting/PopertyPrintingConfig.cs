@@ -26,9 +26,12 @@ namespace ObjectPrinting
                 throwException();
             if (!serializationFuncsForDifferentType.ContainsKey(typeof(T)))
             {
-                serializationFuncsForDifferentType.Add(typeof(T), null);
+                serializationFuncsForDifferentType.Add(typeof(T), x => serializationFun((T) x));
             }
-            serializationFuncsForDifferentType[typeof(T)] = x => serializationFun((T) x);
+            else
+            {
+                serializationFuncsForDifferentType[typeof(T)] = x => serializationFun((T) x);
+            }
             return Config;
         }
     }

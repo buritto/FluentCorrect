@@ -98,9 +98,12 @@ namespace ObjectPrinting
             CheckCoorectAddSerialization(propInfo);
             if (!serializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
             {
-                serializationFuncsForDifferentProperty.Add(propInfo.Name, null);
+                serializationFuncsForDifferentProperty.Add(propInfo.Name, x => serializationMethod((TypeProperty)x));
             }
-            serializationFuncsForDifferentProperty[propInfo.Name] = x => serializationMethod((TypeProperty) x);
+            else
+            {
+                serializationFuncsForDifferentProperty[propInfo.Name] = x => serializationMethod((TypeProperty)x);
+            }
             return this;
         }
 
@@ -111,9 +114,14 @@ namespace ObjectPrinting
                 ((MemberExpression) stringProperty.Body)
                 .Member.Name;
             if (!clipper.ContainsKey(propName))
-                clipper.Add(propName, null);
-            clipper[propName] =
-                propertyToString => propertyToString.Substring(startIndex, endIndex);
+            {
+                clipper.Add(propName, propertyToString => propertyToString.Substring(startIndex, endIndex));
+            }
+            else
+            {
+                clipper[propName] =
+                    propertyToString => propertyToString.Substring(startIndex, endIndex);
+            }
             return this;
         }
 
@@ -139,8 +147,13 @@ namespace ObjectPrinting
             if (excludeTypes.Contains(type))
                 throwException();
             if (cultureForDifferentNumberBase.ContainsKey(type))
-                cultureForDifferentNumberBase.Add(type, null);
-            cultureForDifferentNumberBase[type] = culture;
+            {
+                cultureForDifferentNumberBase.Add(type, culture);
+            }
+            else
+            {
+                cultureForDifferentNumberBase[type] = culture;
+            }
             return this;
         }
     }
