@@ -92,9 +92,7 @@ namespace ObjectPrinting
             Expression<Func<TOwner, TypeProperty>> expression,
             Func<TypeProperty, string> serializationMethod)
         {
-            var propInfo =
-                ((MemberExpression) expression.Body)
-                .Member;
+            var propInfo = GeiInformationProperty(expression);
             CheckCoorectAddSerialization(propInfo);
             if (!serializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
             {
@@ -110,16 +108,14 @@ namespace ObjectPrinting
         public PrintingConfig<TOwner> Clip(Expression<Func<TOwner, string>> stringProperty, int startIndex,
             int endIndex)
         {
-            var propName =
-                ((MemberExpression) stringProperty.Body)
-                .Member.Name;
-            if (!clipper.ContainsKey(propName))
+            var propInfo = GeiInformationProperty(stringProperty);
+            if (!clipper.ContainsKey(propInfo.Name))
             {
-                clipper.Add(propName, propertyToString => propertyToString.Substring(startIndex, endIndex));
+                clipper.Add(propInfo.Name, propertyToString => propertyToString.Substring(startIndex, endIndex));
             }
             else
             {
-                clipper[propName] =
+                clipper[propInfo.Name] =
                     propertyToString => propertyToString.Substring(startIndex, endIndex);
             }
             return this;
@@ -134,11 +130,9 @@ namespace ObjectPrinting
         public PrintingConfig<TOwner> ExcludeProperty<Propetry>(Expression<Func<TOwner, Propetry>> expression)
         {
 
-            var propName =
-                ((MemberExpression) expression.Body)
-                .Member.Name;
-            if (!excludePropert.Contains(propName))
-                excludePropert.Add(propName);
+            var propInfo = GeiInformationProperty(expression);
+            if (!excludePropert.Contains(propInfo.Name))
+                excludePropert.Add(propInfo.Name);
             return this;
         }
 
@@ -155,6 +149,13 @@ namespace ObjectPrinting
                 cultureForDifferentNumberBase[type] = culture;
             }
             return this;
+        }
+
+        private MemberInfo GeiInformationProperty(Expression e)
+        {
+            var body = ((LambdaExpression) e).Body;
+            var member = (MemberExpression) body;
+            return member.Member;
         }
     }
 }
