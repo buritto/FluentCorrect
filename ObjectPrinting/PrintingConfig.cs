@@ -76,10 +76,10 @@ namespace ObjectPrinting
             return excludePropert.Contains(property.Name) || excludeTypes.Contains(property.PropertyType);
         }
 
-        public PrintingConfig<TOwner> ExcludeType<TypeProperty>()
+        public PrintingConfig<TOwner> ExcludeType<TProperty>()
         {
-            if (!excludeTypes.Contains(typeof(TypeProperty)))
-                excludeTypes.Add(typeof(TypeProperty));
+            if (!excludeTypes.Contains(typeof(TProperty)))
+                excludeTypes.Add(typeof(TProperty));
             return this;
         }
 
@@ -88,19 +88,19 @@ namespace ObjectPrinting
             return new PropertyPrintingConfig<T, TOwner>(this, excludeTypes, serializationFuncsForDifferentType);
         }
 
-        public PrintingConfig<TOwner> SerializingProperty<TypeProperty>(
-            Expression<Func<TOwner, TypeProperty>> expression,
-            Func<TypeProperty, string> serializationMethod)
+        public PrintingConfig<TOwner> SerializingProperty<TProperty>(
+            Expression<Func<TOwner, TProperty>> expression,
+            Func<TProperty, string> serializationMethod)
         {
             var propInfo = GeiInformationProperty(expression);
             CheckCoorectAddSerialization(propInfo);
             if (!serializationFuncsForDifferentProperty.ContainsKey(propInfo.Name))
             {
-                serializationFuncsForDifferentProperty.Add(propInfo.Name, x => serializationMethod((TypeProperty)x));
+                serializationFuncsForDifferentProperty.Add(propInfo.Name, x => serializationMethod((TProperty)x));
             }
             else
             {
-                serializationFuncsForDifferentProperty[propInfo.Name] = x => serializationMethod((TypeProperty)x);
+                serializationFuncsForDifferentProperty[propInfo.Name] = x => serializationMethod((TProperty)x);
             }
             return this;
         }
@@ -127,7 +127,7 @@ namespace ObjectPrinting
                 throwException();
         }
 
-        public PrintingConfig<TOwner> ExcludeProperty<Propetry>(Expression<Func<TOwner, Propetry>> expression)
+        public PrintingConfig<TOwner> ExcludeProperty<TPropetry>(Expression<Func<TOwner, TPropetry>> expression)
         {
 
             var propInfo = GeiInformationProperty(expression);
